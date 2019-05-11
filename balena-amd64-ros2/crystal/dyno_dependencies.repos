@@ -1,0 +1,5 @@
+repositories:
+  custom_msgs/canopen_msgs:
+    type: git
+    url: https://github.com/samiamlabs/canopen_msgs.git
+    version: master

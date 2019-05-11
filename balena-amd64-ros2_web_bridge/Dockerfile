@@ -1,6 +1,6 @@
-FROM dynorobotics/balena-aarch64-ros2:crystal
+FROM dynorobotics/balena-amd64-ros2:crystal
 
-RUN [ "cross-build-start" ]
+# RUN [ "cross-build-start" ]
 
 WORKDIR /usr/src
 
@@ -9,7 +9,7 @@ RUN git clone https://github.com/RobotWebTools/ros2-web-bridge.git \
   && . /opt/ros2_ws/install/setup.sh \
   && npm install
 
-RUN [ "cross-build-end" ]
+# RUN [ "cross-build-end" ]
 
 WORKDIR /usr/src/ros2-web-bridge
 

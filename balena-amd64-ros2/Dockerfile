@@ -1,6 +1,6 @@
-FROM balenalib/aarch64-ubuntu-node:latest-bionic-build
+FROM balenalib/amd64-ubuntu-node:latest-bionic-build
 
-RUN [ "cross-build-start" ]
+# RUN [ "cross-build-start" ]
 
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone && \
@@ -91,7 +91,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-RUN [ "cross-build-end" ]
+# RUN [ "cross-build-end" ]
 
 # setup entrypoint
 COPY ./ros_entrypoint.sh /
