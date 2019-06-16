@@ -1,6 +1,6 @@
-FROM balenalib/amd64-ubuntu-node:latest-bionic-build
+FROM balenalib/jetson-tx2-ubuntu-node:latest-bionic-build
 
-# RUN [ "cross-build-start" ]
+RUN [ "cross-build-start" ]
 
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone && \
@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -q -y \
     && rm -rf /var/lib/apt/lists/*
 
 # setup ros2 keys
-RUN curl http://repo.ros2.org/repos.key | sudo apt-key add -
+RUN curl http://repo.ros2.org/repos.key | apt-key add -
 
 # setup sources.list
 RUN echo "deb http://packages.ros.org/ros2/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros2-latest.list
@@ -99,10 +99,10 @@ RUN apt-get update && apt-get install -q -y \
     && rm -rf /var/lib/apt/lists/*
 
 # clone source
-ENV ROS2_WS /opt/ros2_ws
+ENV ROS2_WS /root/ros2_ws
 RUN mkdir -p $ROS2_WS/src
 WORKDIR $ROS2_WS
-RUN wget https://raw.githubusercontent.com/ros2/ros2/crystal/ros2.repos \
+RUN wget https://raw.githubusercontent.com/ros2/ros2/release-latest/ros2.repos \
     && vcs import src < ros2.repos
 
 # install dependencies
@@ -121,7 +121,6 @@ RUN colcon \
     --merge-install
 
 COPY ./dyno_dependencies.repos $ROS2_WS
-RUN vcs import src < dyno_dependencies.repos
 
 RUN colcon \
     build \
@@ -135,7 +134,7 @@ RUN colcon \
 #     && rm -rf /var/lib/apt/lists/*
 
 
-# RUN [ "cross-build-end" ]
+RUN [ "cross-build-end" ]
 
 # setup entrypoint
 COPY ./ros_entrypoint.sh /
