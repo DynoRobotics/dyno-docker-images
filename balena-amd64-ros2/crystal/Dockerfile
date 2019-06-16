@@ -128,6 +128,59 @@ RUN colcon \
     --cmake-args -DSECURITY=ON --no-warn-unused-cli \
     --merge-install
 
+# --- Moved here from dredgebot_ros ---
+# Terminal utils
+RUN apt-get update && apt-get install -y \
+  curl \
+  wget \
+  vim \
+  less \
+  python-pip \
+  ranger \
+  tmux \
+  python3-matplotlib \
+  libyaml-dev \
+  libxaw7-dev \
+  clang-format \
+  net-tools \
+  iputils-ping \
+  htop \
+  can-utils \
+  && rm -rf /var/likb/apt/lists/*
+
+# ROS 2
+RUN apt-get update && apt-get install -y \
+  build-essential \
+  cmake \
+  git \
+  python3-colcon-common-extensions \
+  python3-pip \
+  python-rosdep \
+  python3-vcstool \
+  wget \
+  && python3 -m pip install -U \
+  argcomplete \
+  flake8 \
+  flake8-blind-except \
+  flake8-builtins \
+  flake8-class-newline \
+  flake8-comprehensions \
+  flake8-deprecated \
+  flake8-docstrings \
+  flake8-import-order \
+  flake8-quotes \
+  pytest-repeat \
+  pytest-rerunfailures \
+  pytest \
+  pytest-cov \
+  pytest-watch \
+  pytest-runner \
+  setuptools \
+  # kmod \
+  && rm -rf /var/likb/apt/lists/*
+
+ENV CHOOSE_ROS_DISTRO crystal
+
 # install ros2 packages
 # ENV ROS_DISTRO crystal
 # RUN apt-get update && apt-get install -y \
