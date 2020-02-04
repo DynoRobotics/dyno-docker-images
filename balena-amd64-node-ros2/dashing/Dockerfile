@@ -1,4 +1,4 @@
-FROM balenalib/amd64-ubuntu:bionic-build
+FROM balenalib/amd64-ubuntu-node:10.16-bionic-build
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -103,6 +103,9 @@ WORKDIR $ROS2_WS
 RUN wget https://raw.githubusercontent.com/ros2/ros2/$CHOOSE_ROS_DISTRO/ros2.repos \
     && vcs import src < ros2.repos
 
+# FIXME[sam]: the master branch seems broken at the time of writing, try to remove this later...
+RUN cd /opt/ros2_ws/src/ros2/rmw_cyclonedds && git checkout 0.4.4
+
 # bootstrap rosdep
 ENV ROSDISTRO_INDEX_URL https://raw.githubusercontent.com/ros/rosdistro/master/index.yaml
 RUN rosdep init \
@@ -120,18 +123,9 @@ RUN apt-get update && rosdep install -y \
 WORKDIR $ROS2_WS
 ARG CMAKE_BUILD_TYPE=Debug
 RUN colcon build \
+    --merge-install \
     --cmake-args \
     -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
-
-# Install nvm, Node.js and node-gyp
-# NOTE(sam): This version is needed by rclnodejs
-
-ENV NODE_VERSION v10.16.2
-RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash \
-    && . $HOME/.nvm/nvm.sh \
-    && nvm install $NODE_VERSION && nvm alias default $NODE_VERSION \
-    && npm install -g nodemon
-
 
 RUN echo "source /opt/ros2_ws/install/local_setup.bash" >> $HOME/.bashrc
 

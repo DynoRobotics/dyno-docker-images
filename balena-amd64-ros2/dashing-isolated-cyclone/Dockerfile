@@ -72,8 +72,6 @@ RUN apt-get update && apt-get install -y \
   python3-vcstool \
   dirmngr \
   gnupg2 \
-  libasio-dev \
-  libtinyxml2-dev \
   libcunit1-dev \
   # kmod \
   && python3 -m pip install -U \
@@ -116,22 +114,17 @@ RUN apt-get update && rosdep install -y \
     --skip-keys "console_bridge fastcdr fastrtps libopensplice67 libopensplice69 rti-connext-dds-5.3.1 urdfdom_headers" \
     && rm -rf /var/lib/apt/lists/*
 
+# NOTE(sam): rosdep hotfix...
+RUN rm -rf src && mkdir src
+COPY ros2.repos ros2.repos
+RUN vcs import src < ros2.repos
+
 # build source
 WORKDIR $ROS2_WS
 ARG CMAKE_BUILD_TYPE=Debug
 RUN colcon build \
     --cmake-args \
     -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
-
-# Install nvm, Node.js and node-gyp
-# NOTE(sam): This version is needed by rclnodejs
-
-ENV NODE_VERSION v10.16.2
-RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash \
-    && . $HOME/.nvm/nvm.sh \
-    && nvm install $NODE_VERSION && nvm alias default $NODE_VERSION \
-    && npm install -g nodemon
-
 
 RUN echo "source /opt/ros2_ws/install/local_setup.bash" >> $HOME/.bashrc
 
