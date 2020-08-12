@@ -1,4 +1,4 @@
-FROM balenalib/amd64-ubuntu-node:focal-build
+FROM balenalib/amd64-ubuntu-node:12-focal-build
 
 ENV DEBIAN_FRONTEND=noninteractive
 
