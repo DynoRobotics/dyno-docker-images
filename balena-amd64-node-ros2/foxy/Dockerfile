@@ -1,8 +1,8 @@
-FROM balenalib/jetson-tx2-ubuntu-node:10.16-bionic-build
+FROM balenalib/amd64-ubuntu-node:focal-build
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-ENV CHOOSE_ROS_DISTRO eloquent
+ENV CHOOSE_ROS_DISTRO foxy
 
 # setup timezone and environment
 RUN apt-get update && apt-get install -y \
@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
   curl \
   gnupg2 \
   && echo 'Etc/UTC' > /etc/timezone \
-  && ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime \
+  # && ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime \
   && apt-get install -q -y tzdata \
   && rm -rf /var/likb/apt/lists/*
 
@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y \
   wget \
   vim \
   less \
-  python-pip \
+  python3-pip \
   ranger \
   tmux \
   python3-matplotlib \
@@ -68,7 +68,7 @@ RUN apt-get update && apt-get install -y \
   git \
   python3-colcon-common-extensions \
   python3-pip \
-  python-rosdep \
+  python3-rosdep \
   python3-vcstool \
   dirmngr \
   gnupg2 \
@@ -102,9 +102,6 @@ RUN mkdir -p $ROS2_WS/src
 WORKDIR $ROS2_WS
 RUN wget https://raw.githubusercontent.com/ros2/ros2/$CHOOSE_ROS_DISTRO/ros2.repos \
     && vcs import src < ros2.repos
-
-# FIXME[sam]: the master branch seems broken at the time of writing, try to remove this later...
-RUN cd /opt/ros2_ws/src/ros2/rmw_cyclonedds && git checkout 0.4.4
 
 # bootstrap rosdep
 ENV ROSDISTRO_INDEX_URL https://raw.githubusercontent.com/ros/rosdistro/master/index.yaml

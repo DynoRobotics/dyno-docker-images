@@ -1,8 +1,8 @@
-FROM balenalib/jetson-tx2-ubuntu-node:10.16-bionic-build
+FROM balenalib/amd64-ubuntu:bionic-build
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-ENV CHOOSE_ROS_DISTRO eloquent
+ENV CHOOSE_ROS_DISTRO dashing
 
 # setup timezone and environment
 RUN apt-get update && apt-get install -y \
@@ -74,7 +74,6 @@ RUN apt-get update && apt-get install -y \
   gnupg2 \
   libasio-dev \
   libtinyxml2-dev \
-  libcunit1-dev \
   # kmod \
   && python3 -m pip install -U \
   argcomplete \
@@ -103,9 +102,6 @@ WORKDIR $ROS2_WS
 RUN wget https://raw.githubusercontent.com/ros2/ros2/$CHOOSE_ROS_DISTRO/ros2.repos \
     && vcs import src < ros2.repos
 
-# FIXME[sam]: the master branch seems broken at the time of writing, try to remove this later...
-RUN cd /opt/ros2_ws/src/ros2/rmw_cyclonedds && git checkout 0.4.4
-
 # bootstrap rosdep
 ENV ROSDISTRO_INDEX_URL https://raw.githubusercontent.com/ros/rosdistro/master/index.yaml
 RUN rosdep init \
@@ -119,11 +115,15 @@ RUN apt-get update && rosdep install -y \
     --skip-keys "console_bridge fastcdr fastrtps libopensplice67 libopensplice69 rti-connext-dds-5.3.1 urdfdom_headers" \
     && rm -rf /var/lib/apt/lists/*
 
+# NOTE(sam): rosdep hotfix...
+RUN rm -rf src && mkdir src
+COPY ros2.repos ros2.repos
+RUN vcs import src < ros2.repos
+
 # build source
 WORKDIR $ROS2_WS
 ARG CMAKE_BUILD_TYPE=Debug
 RUN colcon build \
-    --merge-install \
     --cmake-args \
     -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
 
