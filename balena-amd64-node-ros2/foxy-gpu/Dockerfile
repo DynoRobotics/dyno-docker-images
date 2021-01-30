@@ -5,5 +5,5 @@ RUN apt-get update && apt-get install -y \
     mesa-utils \
   && add-apt-repository ppa:graphics-drivers -y \
   && apt-get update \
-  && apt-get install -y nvidia-driver-440 \
+  && apt-get install -y nvidia-driver-450 \
   && rm -rf /var/likb/apt/lists/*
