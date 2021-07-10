@@ -54,8 +54,9 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/likb/apt/lists/*
 
 # setup ros2 keys
-RUN curl http://repo.ros2.org/repos.key | sudo apt-key add -
-RUN curl -sL "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x5523BAEEB01FA116" | sudo apt-key add
+# RUN curl http://repo.ros2.org/repos.key | sudo apt-key add -
+# RUN curl -sL "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x5523BAEEB01FA116" | sudo apt-key add
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
 
 # setup sources.list
 RUN echo "deb [arch=amd64,arm64] http://packages.ros.org/ros2/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/ros2-latest.list
